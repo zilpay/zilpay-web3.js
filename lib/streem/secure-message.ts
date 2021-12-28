@@ -37,5 +37,4 @@ import type { TabStream } from './tab-stream';
 
     stream.send(deserialized, recipient);
   }
-
 }

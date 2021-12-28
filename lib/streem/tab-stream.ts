@@ -10,7 +10,11 @@
 import type { ReqBody } from 'types/message';
 import { MTypeTabContent } from './stream-keys';
 
-const { document } = globalThis;
+const { document, window } = globalThis;
+
+export interface CustomEvent extends Event {
+  detail: string;
+}
 
 /**
  * Used for communication between a web page and an extension's content script.
@@ -31,13 +35,20 @@ const { document } = globalThis;
    * Message listener that returns decrypted messages when synced
    */
   public listen(cb: (payload: ReqBody) => void) {
-    document.addEventListener(this.#eventName, (event: any) => {
-      const detail = event['detail'];
+    document.addEventListener(this.#eventName, (event: CustomEvent) => {
+      const detail = event.detail;
 
       if (detail) {
         cb(JSON.parse(detail));
       }
-    });
+    }, false);
+    window.addEventListener(this.#eventName, (event: CustomEvent) => {
+      const detail = event.detail;
+
+      if (detail) {
+        cb(JSON.parse(detail));
+      }
+    }, false);
   }
 
   /**
@@ -54,7 +65,17 @@ const { document } = globalThis;
   }
 
   #dispatch(data: string, to: string) {
-    document.dispatchEvent(this.#getEvent(data, to));
+    const mobile = globalThis['ReactNativeWebView'];
+
+    try {
+      if (mobile) {
+        mobile.postMessage(data);
+      } else {
+        document.dispatchEvent(this.#getEvent(data, to));
+      }
+    } catch {
+      window.location.reload();
+    }
   }
 
   /**
