@@ -9,6 +9,7 @@
 
 import type { InpageWallet } from "./account";
 import type { TxBlock } from "./block";
+import type { Params } from "./zilliqa";
 
 export interface BodyPayload {
   uuid: string;
@@ -21,6 +22,8 @@ export interface BodyPayload {
   isEnable?: boolean;
   node?: string;
   block?: TxBlock;
+  params?: Params;
+  method?: string;
 }
 
 export interface ReqBody {

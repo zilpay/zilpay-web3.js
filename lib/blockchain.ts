@@ -38,7 +38,7 @@ export class Blockchain {
     const transaction = new Transaction(params, priority);
     const result = await this.#wallet.sign(transaction);
 
-    return new Transaction(result);
+    return new Transaction(result as TransactionParams);
   }
 
   /**
