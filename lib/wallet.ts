@@ -8,10 +8,11 @@
  */
 
 import type { TabStream } from "./streem/tab-stream";
-import type { MessageParams } from "types/transaction";
+import type { MessageParams, TxParams } from "types/transaction";
 import type { InpageWallet } from "types/account";
 import type { Subject } from './streem/subject';
 import type { TxBlock } from 'types/block';
+import type { SignedMessage } from "types/zilliqa";
 
 import assert from './utils/assert';
 import { uuidv4 } from './crypto/uuid';
@@ -188,7 +189,7 @@ export class Wallet {
     return Array.from(this.txns);
   }
 
-  public async sign(arg: Transaction | string): Promise<any> {
+  public async sign(arg: Transaction | string): Promise<SignedMessage | TxParams> {
     assert(this.isConnect, ErrorMessages.Connect);
 
     if (TypeOf.isString(arg)) {
@@ -202,7 +203,7 @@ export class Wallet {
     );
   }
 
-  public async connect() {
+  public async connect(): Promise<boolean> {
     const type = MTypeTab.CONNECT_APP;
     const recipient = MTypeTabContent.CONTENT;
     const uuid = uuidv4();
@@ -227,7 +228,7 @@ export class Wallet {
         if (msg.payload.uuid !== uuid) return;
 
         this.#isConnect = Boolean(msg.payload.resolve);
-        this.#defaultAccount = msg.payload.resolve || null;
+        this.#defaultAccount = (msg.payload.resolve as InpageWallet) || null;
 
         obs();
         return resolve(Boolean(msg.payload.resolve));
@@ -254,6 +255,7 @@ export class Wallet {
           break;
         case MTypeTab.NETWORK_CHANGED:
           this.#net = msg.payload.netwrok;
+          // TODO: rename to http.
           this.#http = msg.payload.node;
           break;
         default:
@@ -262,7 +264,7 @@ export class Wallet {
     });
   }
 
-  #signMessage(message: string) {
+  #signMessage(message: string): Promise<SignedMessage> {
     const type = MTypeTab.SIGN_MESSAGE;
     const recipient = MTypeTabContent.CONTENT;
     const uuid = uuidv4();
@@ -291,12 +293,12 @@ export class Wallet {
         }
 
         obs();
-        return resolve(msg.payload.resolve);
+        return resolve(msg.payload.resolve as SignedMessage);
       });
     });
   }
 
-  #signTransaction(tx: Transaction) {
+  #signTransaction(tx: Transaction): Promise<TxParams> {
     const type = MTypeTab.CALL_TO_SIGN_TX;
     const recipient = MTypeTabContent.CONTENT;
     const uuid = uuidv4();
@@ -324,7 +326,7 @@ export class Wallet {
         }
 
         obs();
-        return resolve(msg.payload.resolve);
+        return resolve(msg.payload.resolve as TxParams);
       });
     });
   }

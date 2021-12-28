@@ -27,10 +27,14 @@ export class HTTPProvider {
   public RPCMethod = RPCMethod;
   public middleware = {
     request: {
-      use() {}
+      use() {
+        return;
+      }
     },
     response: {
-      use() {}
+      use() {
+        return;
+      }
     }
   };
 

@@ -7,9 +7,25 @@
  * Copyright (c) 2021 ZilPay
  */
 
+import type { InpageWallet } from "./account";
+import type { TxBlock } from "./block";
+
+export interface BodyPayload {
+  uuid: string;
+  reject?: string;
+  resolve?: unknown;
+  account?: InpageWallet;
+  http?: string;
+  netwrok?: string;
+  isConnect?: boolean;
+  isEnable?: boolean;
+  node?: string;
+  block?: TxBlock;
+}
+
 export interface ReqBody {
   type: string;
-  payload?: any;
+  payload?: BodyPayload;
   domain?: string;
   from?: string;
 }

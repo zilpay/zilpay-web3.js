@@ -14,7 +14,7 @@ const { document } = globalThis;
  */
  export function getFavicon() {
   try {
-    const found: any = document.querySelector('link[rel*=\'icon\']');
+    const found = document.querySelector('link[rel*=\'icon\']');
     return found['href'];
   } catch (err) {
     return null;

@@ -145,7 +145,7 @@ export class Contract {
     );
 
     if (TypeOf.isObject(result)) {
-      this.code = String((result as any)['code']);
+      this.code = String(result['code']);
     }
 
     if (error) {

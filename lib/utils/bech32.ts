@@ -64,7 +64,7 @@ const hrpExpand = (hrp: string): Buffer => {
  * @param {boolean} pad
  * @returns {Buffer|null}
  */
-export function convertBits(data: Buffer, fromWidth: number, toWidth: number, pad: boolean = true): Buffer | null {
+export function convertBits(data: Buffer, fromWidth: number, toWidth: number, pad = true): Buffer | null {
   let acc = 0;
   let bits = 0;
   const ret = [];
