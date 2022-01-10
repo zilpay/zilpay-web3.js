@@ -68,22 +68,31 @@ export class Wallet {
 
     return {
       subscribe: (cb: (account: InpageWallet) => void) => {
+        if (this.#defaultAccount) {
+          cb(this.#defaultAccount);
+        }
         const obs = this.#subject.on((msg) => {
+          let account: InpageWallet;
+
           switch (msg.type) {
             case MTypeTab.ADDRESS_CHANGED:
-              cb(msg.payload.account);
+              account = msg.payload.account;
               break;
             case MTypeTab.GET_WALLET_DATA:
-              cb(msg.payload.account);
+              account = msg.payload.account;
               break;
             case MTypeTab.LOCK_STAUS:
-              cb(msg.payload.account);
+              account = msg.payload.account;
               break;
             case MTypeTab.RESPONSE_TO_DAPP:
-              cb(msg.payload.account);
+              account = msg.payload.account;
               break;
             default:
               break;
+          }
+
+          if (account) {
+            cb(account);
           }
         });
 
@@ -227,11 +236,11 @@ export class Wallet {
         if (msg.type !== MTypeTab.RESPONSE_TO_DAPP) return;
         if (msg.payload.uuid !== uuid) return;
 
-        this.#isConnect = Boolean(msg.payload.resolve);
-        this.#defaultAccount = (msg.payload.resolve as InpageWallet) || null;
+        this.#isConnect = Boolean(msg.payload.account);
+        this.#defaultAccount = (msg.payload.account as InpageWallet) || null;
 
         obs();
-        return resolve(Boolean(msg.payload.resolve));
+        return resolve(this.#isConnect);
       });
     });
   }
