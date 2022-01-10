@@ -13,7 +13,7 @@ export default {
 	output: {
 		sourcemap: false,
 		format: 'iife',
-		name: 'zilpay.web3',
+		name: 'inpage',
 		file: 'dist/inpage.js'
 	},
 	plugins: [

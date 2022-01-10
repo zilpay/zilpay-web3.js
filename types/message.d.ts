@@ -12,7 +12,7 @@ import type { TxBlock } from "./block";
 import type { Params } from "./zilliqa";
 
 export interface BodyPayload {
-  uuid: string;
+  uuid?: string;
   reject?: string;
   resolve?: unknown;
   account?: InpageWallet;

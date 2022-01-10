@@ -28,7 +28,7 @@ export interface CustomEvent extends Event {
    * @param {String} eventName - Event type.
    */
   constructor(eventName: string) {
-    this.#eventName = eventName
+    this.#eventName = 'message';
   }
 
   /**
@@ -36,14 +36,14 @@ export interface CustomEvent extends Event {
    */
   public listen(cb: (payload: ReqBody) => void) {
     document.addEventListener(this.#eventName, (event: CustomEvent) => {
-      const detail = event.detail;
+      const detail = event['data'];
 
       if (detail) {
         cb(JSON.parse(detail));
       }
     }, false);
     window.addEventListener(this.#eventName, (event: CustomEvent) => {
-      const detail = event.detail;
+      const detail = event['data'];
 
       if (detail) {
         cb(JSON.parse(detail));

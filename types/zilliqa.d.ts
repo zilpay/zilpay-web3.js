@@ -9,9 +9,15 @@
 import type { TxParams } from './transaction';
 
 export type Params = TxParams[] | string[] | number[] | (string | string[] | number[])[];
+export type NodeParams = string[] | Array<string[]>;
 
 export interface SignedMessage {
   message: string;
   publicKey: string;
   signature: string;
+}
+
+export interface BatchRequest {
+  method: string;
+  params: NodeParams;
 }

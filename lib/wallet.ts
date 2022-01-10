@@ -306,6 +306,7 @@ export class Wallet {
       ...tx.payload,
       uuid,
       title: window.document.title,
+      domain: window.location.origin,
       icon: getFavicon()
     };
 
