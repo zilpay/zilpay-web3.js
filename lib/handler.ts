@@ -13,7 +13,7 @@ import { Subject } from './streem/subject';
 import { ContentMessage } from './streem/secure-message';
 
 export class Handler {
-  public readonly stream = new TabStream(MTypeTabContent.INJECTED);
+  public readonly stream = new TabStream();
   public readonly subject = new Subject();
 
   constructor() {

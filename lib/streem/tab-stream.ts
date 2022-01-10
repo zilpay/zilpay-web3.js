@@ -11,6 +11,7 @@ import type { ReqBody } from 'types/message';
 import { MTypeTabContent } from './stream-keys';
 
 const { document, window } = globalThis;
+const mobile = globalThis['ReactNativeWebView'];
 
 export interface CustomEvent extends Event {
   detail: string;
@@ -21,34 +22,36 @@ export interface CustomEvent extends Event {
  */
  export class TabStream {
 
-  readonly #eventName: string;
-
-  /**
-   * Creates a new TabStream.
-   * @param {String} eventName - Event type.
-   */
-  constructor(eventName: string) {
-    this.#eventName = 'message';
-  }
+  readonly #eventName = 'message';
 
   /**
    * Message listener that returns decrypted messages when synced
    */
   public listen(cb: (payload: ReqBody) => void) {
-    document.addEventListener(this.#eventName, (event: CustomEvent) => {
-      const detail = event['data'];
-
-      if (detail) {
-        cb(JSON.parse(detail));
-      }
-    }, false);
-    window.addEventListener(this.#eventName, (event: CustomEvent) => {
-      const detail = event['data'];
-
-      if (detail) {
-        cb(JSON.parse(detail));
-      }
-    }, false);
+    if (mobile) {
+      document.addEventListener(this.#eventName, (event: CustomEvent) => {
+        const detail = event['data'];
+  
+        if (detail) {
+          cb(JSON.parse(detail));
+        }
+      }, false);
+      window.addEventListener(this.#eventName, (event: CustomEvent) => {
+        const detail = event['data'];
+  
+        if (detail) {
+          cb(JSON.parse(detail));
+        }
+      }, false);
+    } else {
+      document.addEventListener(MTypeTabContent.INJECTED, (event: CustomEvent) => {
+        const detail = event['detail'];
+  
+        if (detail) {
+          cb(JSON.parse(detail));
+        }
+      }, false);
+    }
   }
 
   /**
@@ -65,8 +68,6 @@ export interface CustomEvent extends Event {
   }
 
   #dispatch(data: string, to: string) {
-    const mobile = globalThis['ReactNativeWebView'];
-
     try {
       if (mobile) {
         mobile.postMessage(data);
