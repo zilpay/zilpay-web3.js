@@ -34,5 +34,5 @@ export const MTypeTab = {
 
   CONNECT_APP: `@/${app}/request-to-connect-dapp`,
   RESPONSE_TO_DAPP: `@/${app}/response-dapp-connect`,
-  DISCONNECT_APP: `@/${app}/disconnect-dapp`
+  DISCONNECT_APP: `@/${app}/request-to-disconnect-dapp`
 };
