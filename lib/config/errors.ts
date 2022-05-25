@@ -18,5 +18,6 @@ export enum ErrorMessages {
   Connect = 'User is\'t connections.',
   Rejected = 'Rejected by user',
   MustBeObject = 'Must be object.',
-  MustBeString = 'Must be string.'
+  MustBeString = 'Must be string.',
+  TimeOut = 'Request timeout'
 }

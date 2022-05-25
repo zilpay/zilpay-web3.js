@@ -16,8 +16,3 @@ export interface SignedMessage {
   publicKey: string;
   signature: string;
 }
-
-export interface BatchRequest {
-  method: string;
-  params: NodeParams;
-}

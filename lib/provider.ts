@@ -14,6 +14,7 @@ import { uuidv4 } from './crypto/uuid';
 import { MTypeTab, MTypeTabContent } from './streem/stream-keys';
 import { ContentMessage } from './streem/secure-message';
 import { RPCMethod } from './config/methods';
+import { ErrorMessages } from './config/errors';
 
 export type Response = {
   error?: unknown,
@@ -47,6 +48,7 @@ export class HTTPProvider {
     const type = MTypeTab.CONTENT_PROXY_MEHTOD;
     const recipient = MTypeTabContent.CONTENT;
     const uuid = uuidv4();
+    let sub = null;
 
     // Send to content.js
     new ContentMessage({
@@ -58,8 +60,8 @@ export class HTTPProvider {
       }
     }).send(this.#stream, recipient);
 
-    return new Promise((resolve, reject) => {
-      const sub = this.#subject.on((msg) => {
+    const fulfilled = new Promise((resolve, reject) => {
+      sub = this.#subject.on((msg) => {
         if (msg.type !== MTypeTab.CONTENT_PROXY_RESULT) return;
         if (!msg.payload || !msg.payload.uuid) return;
         if (msg.payload.uuid !== uuid) return;
@@ -73,6 +75,14 @@ export class HTTPProvider {
         sub();
         return resolve(msg.payload.resolve);
       });
-    })
+    });
+    const timeout = new Promise((_, reject) =>{
+      setTimeout(() => {
+        if (sub) sub();
+        reject(new Error(`${method} ${ErrorMessages.TimeOut}`));
+      }, 5000);
+    });
+
+    return Promise.race([fulfilled, timeout]);
   }
 }

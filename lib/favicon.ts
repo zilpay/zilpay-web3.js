@@ -12,10 +12,9 @@ const { document } = globalThis;
 /**
  * Get the favicon from current tab.
  */
- export function getFavicon() {
+export function getFavicon() {
   try {
-    const found = document.querySelector('link[rel*=\'icon\']');
-    return found['href'];
+    return document.querySelector('link[rel*=\'icon\']')['href'];
   } catch (err) {
     return null;
   }

@@ -10,7 +10,6 @@
 import type { HTTPProvider } from "./provider";
 import type { Wallet } from './wallet';
 import type { TransactionParams } from "types/transaction";
-import type { NodeParams, BatchRequest } from "types/zilliqa";
 
 import assert from './utils/assert';
 import { Transaction } from './transaction';
@@ -21,7 +20,6 @@ import { ErrorMessages } from "./config/errors";
 export class Blockchain {
   #provider: HTTPProvider;
   #wallet: Wallet;
-  #batchList: BatchRequest = [];
 
   constructor(provider: HTTPProvider, wallet: Wallet) {
     this.#provider = provider;
@@ -490,12 +488,5 @@ export class Blockchain {
 
   public getNetworkId() {
     return this.#provider.send(RPCMethod.GetNetworkId);
-  }
-
-  #buildRequest(method: string, params: NodeParams = []): BatchRequest {
-    return {
-      method: method,
-      params: params
-    };
   }
 }
